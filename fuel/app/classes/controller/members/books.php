@@ -162,7 +162,7 @@ class Controller_Members_Books extends Controller_Template{
                 ),
 
       )
-      ->set_description( 'https://booksmap.tomomi-s.xyz/public/assets/img/uploads/'.$book['img'] )
+      ->set_description( Uri::base(false) . 'assets/img/uploads/' . $book['img'] )
       ->set_template('
       <label class="" for="">画像</label>
       <div class="p-fieldbox custom-file mb-4">
@@ -313,21 +313,44 @@ class Controller_Members_Books extends Controller_Template{
             $form['user_id'] = $u_id;
 
             if(!empty( Input::post('edit_flg') )){
-              //編集しアップデートする
+              //更新処理
+              // 現在時刻を入れる
+              $form['updated_at'] = date('Y-m-d H:i:s');
               //データ取得
               $mt = \Model\Books::find_by_pk(Input::post('bookid'));
               $mt->set( $form );
               //更新
               $mt->save();
+
+              //保存した後の最新のデータを反映させる
+              $book = $mt; // これで $form['img']（新しいファイル名）が反映された状態になる
+              $this->template->book = View::set_global('book', $book);
+
+              //Fieldsetの中にある画像のパスを最新に書き換える
+              $booksform->field('bookimg')->set_description(Uri::base(false) . 'assets/img/uploads/' . $book['img']);
+
               //成功メッセージ
               Session::set_flash('sucMsg','編集できました！');
 
             }
             else{
-              //本を新規登録する
+              //新規登録処理
+              // 作成日時
+              $form['created_at'] = date('Y-m-d H:i:s');
+              // 更新日時も入れる
+              $form['updated_at'] = date('Y-m-d H:i:s');
+
               $books = \Model\Books::forge();
               $books->set($form); //配列をset
               $books->save(); //saveメソッドで、テーブルにレコードを書き込む
+
+              //完了画面で画像を表示させるために、保存した内容を $book に入れる
+              $book = $form;
+              $this->template->book = View::set_global('book', $book);
+
+              //Fieldsetの中にある画像のパスを最新に書き換える
+              $booksform->field('bookimg')->set_description(Uri::base(false) . 'assets/img/uploads/' . $book['img']);
+
               //成功メッセージ
               Session::set_flash('sucMsg','登録できました！');
             }
@@ -386,6 +409,35 @@ class Controller_Members_Books extends Controller_Template{
     }
 
   }
+
+  // ダミーデーター生成（必要な場合のみコメントアウトを外してアクセス可）
+  // public function action_setup_data()
+  // {
+  //     // ログイン中のユーザーIDを取得
+  //     $u_id = Auth::instance()->get_user_id();
+  //     $u_id = $u_id[1];
+  //
+  //     // 20件のループ
+  //     for ($i = 1; $i <= 20; $i++) {
+  //         $books = \Model\Books::forge();
+  //         $books->set(array(
+  //             'title'      => 'テスト本_' . $i . '巻',
+  //             'cate_id'    => 1, // 既存のカテゴリID（数字）を入れてください
+  //             'stat_id'    => 1, // 既存のステータスID（数字）を入れてください
+  //             'price'      => 500 + ($i * 100),
+  //             'img'        => 'dist/no_image.png', // 画像がなければこれ。あれば既存のファイル名
+  //             'short'      => 'これはテスト用のあらすじです。' . $i . '番目のデータ。ページネーションのテストに最適です。',
+  //             'summary'    => 'これはテスト用の本文です。大量のデータがある時の動作を確認するために生成しました。',
+  //             'delete_flg' => 0,
+  //             'user_id'    => $u_id,
+  //             'created_at' => date('Y-m-d H:i:s'),
+  //             'updated_at' => date('Y-m-d H:i:s'),
+  //         ));
+  //         $books->save();
+  //     }
+  //
+  //     return "20件のデータを生成しました！一覧画面を確認してください。";
+  // }
 
 
 

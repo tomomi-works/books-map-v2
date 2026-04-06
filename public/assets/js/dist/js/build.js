@@ -10802,7 +10802,7 @@ $('.ajax-fav-in').on('click',function(){
     $.ajax({
       type: 'post',
       //アクセス先のパス
-      url: 'https://booksmap.tomomi-s.xyz/public/regist/fav.json',
+      url: '/booksmap/public/regist/fav.json',
       data: {
         bookid: $('.js-bookid').text()
       }
@@ -10827,7 +10827,7 @@ $('.ajax-fav-remove').on('click',function(){
     $.ajax({
       type: 'post',
       //アクセス先のパス
-      url: "https://booksmap.tomomi-s.xyz/public/regist/favnon.json",
+      url: "/booksmap/public/regist/favnon.json",
       //相対パスだと画面によってパスが違ってしまうので、Uri::create()を使う
       data: {
         bookid: $('.js-bookid').text()
@@ -10854,7 +10854,7 @@ $('.ajax-inte-in').on('click',function(){
     $.ajax({
       type: 'post',
       //アクセス先のパス
-      url: 'https://booksmap.tomomi-s.xyz/public/regist/interest.json',
+      url: '/booksmap/public/regist/interest.json',
       data: {
         bookid: $('.js-bookid').text()
       }
@@ -10879,7 +10879,7 @@ $('.ajax-inte-remove').on('click',function(){
     $.ajax({
       type: 'post',
       //アクセス先のパス
-      url: "https://booksmap.tomomi-s.xyz/public/regist/interestnon.json",
+      url: "/booksmap/public/regist/interestnon.json",
       //相対パスだと画面によってパスが違ってしまうので、Uri::create()を使う
       data: {
         bookid: $('.js-bookid').text()

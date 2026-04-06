@@ -4,17 +4,21 @@
 
 class Controller_Upld extends Controller_Rest{
   //定数
-  const DOCROOT = 'https://booksmap.tomomi-s.xyz/public/assets/img/';
+  // const DOCROOT = 'https://booksmap.tomomi-s.xyz/public/assets/img/';
 
     public function post_img(){
 
       Log::debug('画像アップロード');
 
+      // 保存先のフルパスを作成
+      // DOCROOTはFuelPHPが自動で定義する「publicフォルダの物理パス」
+      $upload_path = DOCROOT . 'assets/img/uploads/';
+
       // このアップロードのカスタム設定
       $config = array(
-          'path' => DOCROOT,
+          'path' => $upload_path,
           'randomize' => true,
-          'ext_whitelist' => array('img', 'jpg', 'jpeg', 'gif', 'png'),
+          'ext_whitelist' => array('img', 'jpg', 'jpeg', 'gif', 'png', 'JPG'),
       );
       // $_FILES 内のアップロードされたファイルを処理する
       Upload::process($config);

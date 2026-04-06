@@ -40,6 +40,9 @@ node_modules
 fuel/app/config/*.php
 fuel/app/config/*/*.php
 
+!fuel/app/config/*.example
+!fuel/app/config/*/*.example
+
 # test files [views]
 fuel/app/views/common/head.php
 fuel/app/views/common/header.php
