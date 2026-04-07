@@ -234,7 +234,6 @@ class Controller_Members_Mypage extends Controller_Template{
       }else{
         $order = array('id' => 'desc');
       }
-      $order = array('id' => 'desc');
 
     }else{
 
@@ -275,14 +274,9 @@ class Controller_Members_Mypage extends Controller_Template{
       $ordparam = '';
     }
 
-
-    //削除されていないモノを表示
-    $countset['delete_flg'] = 0;
-
-    //基本設定
-    $order = array();
-    //削除されていないモノを表示
-    $where['delete_flg'] = '0';
+    // 削除されていないモノを条件に追加 (インデックス配列形式で統一)
+    $where[] = array('delete_flg', '=', 0);
+    $countset[] = array('delete_flg', '=', 0);
 
     //user
     // すべてのログインID情報を取得
@@ -296,16 +290,20 @@ class Controller_Members_Mypage extends Controller_Template{
     else
     {
         Session::set_flash('errMsg','ログインしてください');
+        Response::redirect('login'); // ログインしてなければ飛ばす
     }
     //ユーザーIDを元に、favoriteテーブルから全てのレコードを取得
 
-    $favs = \Model\Favorite::find_by('user_id', $u_id, '=', null, 0);
+    $favs = \Model\Favorite::find_by('user_id', $u_id);
 
     $favbooksid = array();
     if (empty($favs))
       {
         //お気に入り登録がなかった場合
         Session::set_flash('errMsg','お気に入り登録はありません');
+        // お気に入りがない時のための空データ
+        $data['books_data'] = array();
+        $count = 0;
       }
       else
       {
@@ -325,12 +323,9 @@ class Controller_Members_Mypage extends Controller_Template{
           $count = \Model\Books::count('id', true, $countset );
 
           $config = array(
-              // 'pagination_url' => \Uri::base() . 'book/booklists' . '?cateid=' . 6,
               'pagination_url' => \Uri::base() . 'members/mypage/favorite?' . $cateparam . $statparam . $ordparam,
               'total_items'    => $count,
               'per_page'       => 12,
-              'uri_segment'    => 3,
-              // もしくは、クエリ文字列によるページネーションがよいのであれば
               'uri_segment'    => 'page',
           );
 
@@ -362,16 +357,20 @@ class Controller_Members_Mypage extends Controller_Template{
           // オブジェクトを渡し、ビューの中に echo で出力される時に表示される
           $data['pagination'] = $pagination;
           // ビューを返す
-          $this->template->content = View::set_global('members/mypage/favorite', $data);
-          $this->template->data = View::set_global('data', $data);
-          $this->template->count = View::set_global('count', $count);
+
+          // すでに お気に入りがある($this->template->content がセットされている)場合は forge しない
+          $this->template->content = View::forge('pages/favorite', $data);
+          // globalセット
+          View::set_global('data', $data);
+          View::set_global('count', $count);
 
           /////////////////////////////////////////
       }
 
+      if (!isset($this->template->content)) {
+          $this->template->content = View::forge('pages/favorite', array('books_data' => array()));
+      }
 
-
-      $this->template->content = View::forge('pages/favorite');
       $this->template->btnContainer = View::set_global('searchHead',View::forge('common/searchHead'));
       $this->template->btnContainer = View::set_global('searchFoot',View::forge('common/searchFoot'));
       $this->template->btnContainer = View::set_global('btnContainer',View::forge('common/btnContainer'));
@@ -561,7 +560,7 @@ class Controller_Members_Mypage extends Controller_Template{
       }else{
         $order = array('id' => 'desc');
       }
-      $order = array('id' => 'desc');
+      // $order = array('id' => 'desc');
 
     }else{
 
@@ -602,10 +601,8 @@ class Controller_Members_Mypage extends Controller_Template{
       $ordparam = '';
     }
 
-    //基本設定
-    $order = array();
-    //削除されていないモノを表示
-    $where['delete_flg'] = '0';
+    $where[] = array('delete_flg', '=', 0);
+    $countset[] = array('delete_flg', '=', 0);
 
     //user
     // すべてのログインID情報を取得
@@ -619,16 +616,19 @@ class Controller_Members_Mypage extends Controller_Template{
     else
     {
         Session::set_flash('errMsg','ログインしてください');
+        Response::redirect('login');
     }
 
 
     //ユーザーIDを元に、favoriteテーブルから全てのレコードを取得
-    $interests = \Model\Interest::find_by('user_id', $u_id, '=', null, 0);
+    $interests = \Model\Interest::find_by('user_id', $u_id);
     $intebooksid = array();
     if (empty($interests))
       {
         //お気に入り登録がなかった場合
         Session::set_flash('errMsg','気になる登録はありません');
+        $data['books_data'] = array();
+        $count = 0;
       }
       else
       {
@@ -645,10 +645,6 @@ class Controller_Members_Mypage extends Controller_Template{
           //interestしている本だけを表示
           $countset[] = array('id', 'in', $intebooksid );
 
-
-          //削除されていないモノを表示
-          $countset['delete_flg'] = 0;
-
           //pagenation
           $count = \Model\Books::count('id', true, $countset );
 
@@ -657,7 +653,7 @@ class Controller_Members_Mypage extends Controller_Template{
               'pagination_url' => \Uri::base() . 'members/mypage/interest?' . $cateparam . $statparam . $ordparam,
               'total_items'    => $count,
               'per_page'       => 12,
-              'uri_segment'    => 3,
+              // 'uri_segment'    => 3,
               // もしくは、クエリ文字列によるページネーションがよいのであれば
               'uri_segment'    => 'page',
           );
@@ -690,17 +686,21 @@ class Controller_Members_Mypage extends Controller_Template{
           // オブジェクトを渡し、ビューの中に echo で出力される時に表示される
           $data['pagination'] = $pagination;
           // ビューを返す
-          $this->template->content = View::set_global('members/mypage/interest', $data);
-          $this->template->data = View::set_global('data', $data);
-          $this->template->count = View::set_global('count', $count);
+          $this->template->content = View::forge('pages/interest', $data);
+          // グローバル
+          View::set_global('data', $data);
+          View::set_global('count', $count);
 
           /////////////////////////////////////////
 
       }
 
+      if (!isset($this->template->content)) {
+          $this->template->content = View::forge('pages/interest', array('books_data' => array()));
+      }
 
 
-      $this->template->content = View::forge('pages/interest');
+      // $this->template->content = View::forge('pages/interest');
       $this->template->btnContainer = View::set_global('searchHead',View::forge('common/searchHead'));
       $categories = \Model\Category::get_category();
       $this->template->categories = View::set_global( 'categories', $categories);
@@ -891,7 +891,6 @@ class Controller_Members_Mypage extends Controller_Template{
       }else{
         $order = array('id' => 'desc');
       }
-      $order = array('id' => 'desc');
 
     }else{
 
@@ -934,7 +933,7 @@ class Controller_Members_Mypage extends Controller_Template{
 
 
     //削除されていないモノを表示
-    $where['delete_flg'] = '0';
+    $where[] = array('delete_flg', '=', 0);
 
     //user
     // すべてのログインID情報を取得
@@ -1014,11 +1013,15 @@ class Controller_Members_Mypage extends Controller_Template{
       // オブジェクトを渡し、ビューの中に echo で出力される時に表示される
       $data['pagination'] = $pagination;
       // ビューを返す
-      $this->template->content = View::set_global('members/mypage/submitBookList', $data);
-      $this->template->data = View::set_global('data', $data);
-      $this->template->count = View::set_global('count', $count);
+      $this->template->content = View::forge('pages/submitBookList', $data);
+      // グローバル
+      View::set_global('data', $data);
+      View::set_global('count', $count);
 
+    }
 
+    if (!isset($this->template->content)) {
+      $this->template->content = View::forge('pages/submitBookList', array('books_data' => array()));
     }
 
 
@@ -1029,7 +1032,6 @@ class Controller_Members_Mypage extends Controller_Template{
       $categories = \Model\Category::get_category();
       $this->template->categories = View::set_global( 'categories', $categories);
 
-      $this->template->content = View::forge('pages/submitBookList');
       $this->template->btnContainer = View::set_global('searchHead',View::forge('common/searchHead'));
       $this->template->btnContainer = View::set_global('searchFoot',View::forge('common/searchFoot'));
       $this->template->btnContainer = View::set_global('btnContainer',View::forge('common/btnContainer'));
