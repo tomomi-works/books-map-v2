@@ -53,6 +53,7 @@ class Controller_Members_Books extends Controller_Template{
     $u_id = $u_id[1];
 
     $errors = '';
+    $img = '';
 
     /////////////////////////////
     //編集画面 OR 投稿画面---------
@@ -69,7 +70,7 @@ class Controller_Members_Books extends Controller_Template{
     }else{
       $book['title'] = '';
       $book['price'] = '';
-      $book['img'] = 'dist/no_image.png';
+      $book['img'] = 'no_image.png';
       $book['short'] = '';
       $book['summary'] = '';
       $books_id = '';
@@ -175,6 +176,12 @@ class Controller_Members_Books extends Controller_Template{
       </div>
       ');
 
+      // 現在の画像を入れる
+      $booksform->add('current_img', '', array(
+          'type' => 'hidden',
+          'value' => $book['img']
+      ));
+
       $booksform
       ->add('short','あらすじ',
             array('type' => 'textarea',
@@ -227,17 +234,11 @@ class Controller_Members_Books extends Controller_Template{
                 )
       );
 
-
-
         //Postされていたら、validation
         if( Input::method() === 'POST' ){
           //validationインスタンスの取得・生成
           $val = $booksform->validation();
           $err = '';
-
-          // POSTに対してバリデーションを実行
-          if ($val->run())
-          {
 
             //画像の処理////////////
             // このアップロードのカスタム設定
@@ -266,36 +267,44 @@ class Controller_Members_Books extends Controller_Template{
                       Log::debug('=============================================== (Ca) エラーメッセージ取得');
 
                       foreach (Upload::get_errors() as $file) //エラーメッセージ取得
-                {
+                      {
 
                           if(!empty($file)){
                               Log::debug('==========エラーあり');
 
-                              foreach($file['errors'] as $key => $val){
+                              foreach($file['errors'] as $key => $v){
 
-                                  if($key == 'message' && !empty($val)){
+                                  if($key == 'message' && !empty($v)){
                                       Log::debug('==========エラーメッセージ取得');
 
-                                      $files['message'] = $val['message']; //メッセージを格納
+                                      $files['message'] = $v['message']; //メッセージを格納
                                       $files += array('error_flg' => 1); //エラーフラグtrue
 
                                   }
                               }
                           }
-                }
+                        }
                   }
 
             //////////////////////
 
             if(!empty($files[0]['saved_as'])){
+              // アップロード成功
               $img = $files[0]['saved_as'];
+            } elseif (Input::post('current_img')) {
+              //エラー戻りあり、前回の画像パスがある場合
+              $img = Input::post('current_img');
             }elseif(!empty($book['img'])){
+              // DBに登録済みの画像がある場合
               $img = $book['img'];
             }else{
               //画像が登録されていなかった場合 NO IMAGE
-              $img = '';
+              $img = 'no_image.png';
             }
 
+          // POSTに対してバリデーションを実行
+          if ($val->run())
+          {
             // バリデーションに成功した場合
             //bookの情報をbooksテーブルへ追加
             $form = array();
@@ -327,7 +336,8 @@ class Controller_Members_Books extends Controller_Template{
               $this->template->book = View::set_global('book', $book);
 
               //Fieldsetの中にある画像のパスを最新に書き換える
-              $booksform->field('bookimg')->set_description(Uri::base(false) . 'assets/img/uploads/' . $book['img']);
+              $current_render_img = !empty($img) ? $img : $book['img'];
+              $booksform->field('bookimg')->set_description(Uri::base(false) . 'assets/img/uploads/' . $current_render_img);
 
               //成功メッセージ
               Session::set_flash('sucMsg','編集できました！');
@@ -349,7 +359,8 @@ class Controller_Members_Books extends Controller_Template{
               $this->template->book = View::set_global('book', $book);
 
               //Fieldsetの中にある画像のパスを最新に書き換える
-              $booksform->field('bookimg')->set_description(Uri::base(false) . 'assets/img/uploads/' . $book['img']);
+              $current_render_img = !empty($img) ? $img : $book['img'];
+              $booksform->field('bookimg')->set_description(Uri::base(false) . 'assets/img/uploads/' . $current_render_img);
 
               //成功メッセージ
               Session::set_flash('sucMsg','登録できました！');
@@ -369,9 +380,14 @@ class Controller_Members_Books extends Controller_Template{
 
           }
 
+          // 画像保持用
+          $_POST['current_img'] = $img;
           //入力された値を保持
           $booksform->repopulate();
-
+          // 画像保持用　build() される前に値をセットし直す
+          $booksform->field('current_img')->set_value($img);
+          // 画像保持用　プレビュー表示の更新
+          $booksform->field('bookimg')->set_description(Uri::base(false) . 'assets/img/uploads/' . $img);
         }
 
 
