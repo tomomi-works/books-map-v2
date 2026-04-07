@@ -1,38 +1,34 @@
-# FuelPHP
+# BooksMap v2 (蔵書管理システム)
+制作期間：2019.1.20〜3.2
+復旧作業：2026.4.2〜4.7
 
-* Version: 1.8.2
-* [Website](https://fuelphp.com/)
-* [Release Documentation](https://fuelphp.com/docs)
-* [Release API browser](https://fuelphp.com/api)
-* [Development branch Documentation](https://fuelphp.com/dev-docs)
-* [Development branch API browser](https://fuelphp.com/dev-api)
-* [Support Forum](https://forums.fuelphp.com) for comments, discussion and community support
+## 📋 プロジェクトの概要
+本好きのためのシンプルな蔵書管理ツールです。
+2019年に開発したPHP製の蔵書管理システムを、2026年に復旧させました。
+書籍の登録・検索・一覧表示などの基本機能を備えています。
 
-## Description
 
-FuelPHP is a fast, lightweight PHP 5.4+ framework. In an age where frameworks are a dime a dozen, we believe that FuelPHP will stand out in the crowd. It will do this by combining all the things you love about the great frameworks out there, while getting rid of the bad.
+2020.3.16 ・ブラウザテスト済（Mac safari/chrome windows Edge/IE11）
+          ・エミュレーターテスト済
+          ・レスポンシブ対応
+2026.4.7 MAMP環境で動作。
 
-FuelPHP is fully PHP 7.3 compatible.
+## 🛠 2026年 復旧・アップデート内容
+長期間停止していたプロジェクトを、以下の対応により再稼働させました。
+- **環境適合**: PHP 7.4 / MySQL 環境へのマイグレーション
+- **バグ修正**: データベース接続例外の解消、および非推奨関数の修正
+- **セキュリティ強化**:
+  - `Personal Access Token` による認証への移行
+  - 設定ファイルの `.gitignore` 管理の徹底（`.example` ファイルによる構成公開）
+- **タイムゾーン対応**: システム全体の時刻同期設定の適正化
 
-## More information
+## 💻 使用技術
+- **Framework**: FuelPHP 1.8.2
+- **Language**: PHP 7.4 / JavaScript / HTML5 / CSS3 / bootstrap/ scss
+- **DB**: MySQL
+- **Environment**: MAMP
 
-For more detailed information, see the [development wiki](https://github.com/fuelphp/fuelphp/wiki).
-
-## Development Team
-
-* Harro Verton - Project Manager, Developer ([http://wanwizard.eu/](http://wanwizard.eu/))
-* Emlyn West - Core Developer, ORM
-
-### Want to join?
-
-The FuelPHP development team is always looking for new team members, who are willing to help lift the framework to the next level, and have the commitment to not only produce awesome code, but also great documentation, and support to our users.
-
-You can not apply for membership. Start by sending in pull-requests, work on outstanding feature requests or bugs, and become active in the #fuelphp IRC channel. If your skills are up to scratch, we will notice you, and will ask you to become a team member.
-
-### Alumni
-
-* Márk Sági-Kazár - Developer
-* Frank de Jonge - Developer ([http://frenky.net/](http://frenky.net/))
-* Jelmer Schreuder - Developer ([http://jelmerschreuder.nl/](http://jelmerschreuder.nl/))
-* Phil Sturgeon - Developer ([http://philsturgeon.co.uk](http://philsturgeon.co.uk))
-* Dan Horrigan - Founder, Developer ([http://dhorrigan.com](http://dhorrigan.com))
+## 🚀 今後の展望
+- UIを意識した画面遷移の改善
+- ユーザー認証機能のブラッシュアップ
+- サーバーへのアップロード
