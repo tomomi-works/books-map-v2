@@ -69,14 +69,14 @@
              ?>
             <div class="col-sm-6">
               <span class="js-bookid d-none"><?php echo Input::get('book'); ?></span>
-              <div class="ajax-fav-in">
+              <div class="ajax-fav-in <?php echo ($is_favorite) ? 'd-none' : ''; ?>">
                 <p class="btn btn-outline-info container-fluid" data-toggle="buttons">
                   <i class="fas fa-heart text-danger"></i>
                   お気に入り登録
                 </p>
               </div>
 
-              <div class="ajax-fav-remove d-none">
+              <div class="ajax-fav-remove <?php echo ($is_favorite) ? '' : 'd-none'; ?>">
                 <p class="btn btn-outline-info container-fluid" data-toggle="buttons">
                   <i class="fas fa-heart text-danger"></i>
                   お気に入りから削除
@@ -84,13 +84,13 @@
               </div>
             </div>
             <div class="col-sm-6">
-              <div class="ajax-inte-in">
+              <div class="ajax-inte-in <?php echo ($is_interest) ? 'd-none' : ''; ?>">
                 <p class="btn btn-outline-info container-fluid" data-toggle="buttons">
                   <i class="fas fa-book"></i>
                   気になるへ追加
                 </p>
               </div>
-              <div class="ajax-inte-remove d-none">
+              <div class="ajax-inte-remove <?php echo ($is_interest) ? '' : 'd-none'; ?>">
                 <p class="btn btn-outline-info container-fluid" data-toggle="buttons">
                   <i class="fas fa-book"></i>
                   気になるから削除

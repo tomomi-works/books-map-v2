@@ -289,6 +289,10 @@ class Controller_Home extends Controller_Template
     //bookDetail
     public function action_bookDetail($editbook = false, $bookTitle = '', $category = '', $price = '¥ -',$bookstatus = '', $bookImg = 'dist/no_image.png', $summaryShort = 'まだ書かれていません！', $summary = null, $username = '')
     {
+      // お気に入りと気になるの変数を初期化（ログインしていない場合のエラー表示回避）
+      $is_favorite = false;
+      $is_interest = false;
+
       // getパラメーターから、books_idを取得
       $books_id = Input::get('book');
 
@@ -297,7 +301,6 @@ class Controller_Home extends Controller_Template
       if($book){
         //本があれば
         $this->template->book = View::set_global('book',$book);
-
       }else{
         //本がなければ
         Session::set_flash('err','本が見つかりませんでした');
@@ -308,11 +311,27 @@ class Controller_Home extends Controller_Template
       if(\Auth::check()){
         //ログイン中のユーザーID
         $user_id = Auth::get_user_id()[1];
+
+        //お気に入り登録済みかチェック ---
+        $is_favorite = \Model\Favorite::find_one_by(array(
+          'book_id' => $books_id,
+          'user_id' => $user_id,
+        ));
+        // Viewに結果を渡す
+        View::set_global('is_favorite', !empty($is_favorite));
+
+        //気になる登録済みかチェック ---
+        $is_interest = \Model\Interest::find_one_by(array(
+            'book_id' => $books_id,
+            'user_id' => $user_id,
+        ));
+        // Viewに結果を渡す
+        View::set_global('is_interest', !empty($is_interest));
+
         //本の登録情報にあるuser_idと合致する場合
         if($book['user_id'] == $user_id ){
           // 編集ボタンを表示
           $editbook = true;
-
         }else{
           $editbook = false;
         }
