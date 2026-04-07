@@ -11,11 +11,19 @@
     <div class="d-flex row mx-auto d-flex justify-content-center container-fluid">
       <div class="card col-sm-3 col-md-4 p-0">
         <?php
-        if(!empty($book['img'])){
-          Asset::add_path('assets/img/uploads', 'img');
-          echo Asset::img( $book['img'], array('class' => 'bd-placeholder-img card-img-top w-100 max-height__250 fit-cover') );
-        }else{
-          echo Asset::img( $bookImg, array('class' => 'bd-placeholder-img card-img-top w-100 max-height__250 fit-cover') );
+        // 表示するファイル名を決定
+        $img_name = !empty($book['img']) ? $book['img'] : $bookImg;
+        //ファイルが存在するか。（publicフォルダ内）
+        $path = DOCROOT . 'assets/img/uploads/' . $img_name;
+
+        if (is_file($path)) {
+            // ファイルがあれば通常通り表示
+            Asset::add_path('assets/img/uploads', 'img');
+            echo Asset::img($img_name, array('class' => 'bd-placeholder-img card-img-top w-100 max-height__250 fit-cover'));
+        } else {
+            // ファイルがない場合、Asset::imgによるエラー回避のために、直接HTMLタグを書く
+            $no_image_url = Uri::base() . 'assets/img/dist/no_image.png';
+            echo '<img src="' . $no_image_url . '" class="bd-placeholder-img card-img-top w-100 max-height__250 fit-cover">';
         }
         ?>
         <ul class="list-group list-group-flush">
@@ -175,11 +183,19 @@
     <div class="d-flex row mx-auto d-flex justify-content-center container-fluid">
       <div class="card col-sm-3 col-md-4 p-0">
         <?php
-        if(!empty($book['img'])){
-          Asset::add_path('assets/img/uploads', 'img');
-          echo Asset::img( $book['img'], array('class' => 'bd-placeholder-img card-img-top w-100 max-height__250 fit-cover') );
-        }else{
-          echo Asset::img( $bookImg, array('class' => 'bd-placeholder-img card-img-top w-100 max-height__250 fit-cover') );
+        // 表示するファイル名を決定
+        $img_name = !empty($book['img']) ? $book['img'] : $bookImg;
+        //ファイルが存在するか。（publicフォルダ内）
+        $path = DOCROOT . 'assets/img/uploads/' . $img_name;
+
+        if (is_file($path)) {
+            // ファイルがあれば通常通り表示
+            Asset::add_path('assets/img/uploads', 'img');
+            echo Asset::img($img_name, array('class' => 'bd-placeholder-img card-img-top w-100 max-height__250 fit-cover'));
+        } else {
+            // ファイルがない場合、Asset::imgによるエラー回避のために、直接HTMLタグを書く
+            $no_image_url = Uri::base() . 'assets/img/dist/no_image.png';
+            echo '<img src="' . $no_image_url . '" class="bd-placeholder-img card-img-top w-100 max-height__250 fit-cover">';
         }
         ?>
       </div>

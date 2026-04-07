@@ -31,10 +31,18 @@
 
             <div class="card my-2 col-sm-3 mx-0 p-0 flex-fill">
               <?php
-              if(!empty($val['img'])){
-                echo Asset::img($val['img'], array('class' => 'bd-placeholder-img card-img-top w-100 height__250 fit-cover') );
-              }else{
-                echo Asset::img($bookImg, array('class' => 'bd-placeholder-img card-img-top w-100 height__250 fit-cover') );
+              // 表示するファイル名を決定
+              $img_name = !empty($val['img']) ? $val['img'] : $bookImg;
+              //ファイルが存在するか。（publicフォルダ内）
+              $path = DOCROOT . 'assets/img/uploads/' . $img_name;
+              
+              // ファイルがあれば通常通り表示
+              if (is_file($path)) {
+                  echo Asset::img($img_name, array('class' => 'bd-placeholder-img card-img-top w-100 height__250 fit-cover'));
+              } else {
+                  // ファイルがない場合、Asset::imgによるエラー回避のために、直接HTMLタグを書く
+                  $no_image_url = Uri::base() . 'assets/img/dist/no_image.png';
+                  echo '<img src="' . $no_image_url . '" class="bd-placeholder-img card-img-top w-100 height__250 fit-cover">';
               }
                ?>
               <div class="card-body">
