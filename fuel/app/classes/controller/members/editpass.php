@@ -25,7 +25,7 @@ class Controller_Members_Editpass extends Controller_Template{
          $loginuser = true;
 
        }else{
-         
+
          $loginuser = false;
 
          ////////////////////////////////////
@@ -204,38 +204,39 @@ class Controller_Members_Editpass extends Controller_Template{
                 $email->to($user->email, $user->username);
 
 
-                // そして (すべてがうまくいけば) それを出す！
+                // 全てがうまくいった場合の処理
                 try
                 {
-                    // メールを送信
-                    $email->send();
+                    // メール送信（テスト用）
+                    \Log::info('【デバッグ】再設定URL: ' . $form['url']);
+                    // メールを送信（本番環境用）
+                    // $email->send();
+
                     // 今メールしたことをユーザーに通知
-                    Session::get_flash('sucMsg','認証用パスワードを送信しました。メールをご確認ください。');
+                    Session::set_flash('sucMsg','認証用URLを送信しました。メールをご確認ください。');
                 }
 
-                // このようなことは起こりません。ユーザーのメールは検証済み、そうでしょう？
+                // バリデーションエラー
                 catch(\EmailValidationFailedException $e)
                 {
-                    Session::get_flash('errMsg','エラーが発生しました。管理者にお問い合わせください');
+                    Session::set_flash('errMsg','エラーが発生しました。管理者にお問い合わせください');
                     // \Response::redirect_back();
                 }
-                // 何かが間違っていた？
+                // その他、メールサーバーの認証失敗など
                 catch(\Exception $e)
                 {
                     // エラーを管理者が確認できるログに記録
                     logger(\Fuel::L_ERROR, '*** Error sending email ('.__FILE__.'#'.__LINE__.'): '.$e->getMessage());
 
-                    Session::get_flash('errMsg','エラーが発生しました。もう一度初めからお試しください。');
+                    Session::set_flash('errMsg','エラーが発生しました。もう一度初めからお試しください。');
                     // \Response::redirect_back();
                 }
 
           }
 
-      }
-
-
-      // フォームの投稿が無く、 URL で渡されたハッシュを持っていますか？
+        }
         elseif ($hash !== null)
+        // フォームの投稿が無く、 URL で渡されたハッシュを持っていますか？
         {
 
             // ハッシュをデコード
@@ -266,7 +267,7 @@ class Controller_Members_Editpass extends Controller_Template{
                     );
 
                     // パスワードを変更させるためにプロフィールに行く
-                      Session::set_flash('sucMsg', 'パス変更ページへ飛ぶ' );
+                      \Log::info('パス変更ページに飛びました ');
                       \Response::redirect('members/editpass/userPassEdit');
 
                 }
