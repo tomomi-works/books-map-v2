@@ -207,11 +207,16 @@ class Controller_Members_Editpass extends Controller_Template{
                 // 全てがうまくいった場合の処理
                 try
                 {
-                    // メール送信（テスト用）
-                    \Log::info('【デバッグ】再設定URL: ' . $form['url']);
-                    // メールを送信（本番環境用）
-                    // $email->send();
-
+                  // 環境で場合分け
+                  if (Fuel::$env === Fuel::DEVELOPMENT) {
+                      // 【開発環境（MAMPなど）】
+                      // 実際にメールは飛ばさず、ログにURLを出して確認
+                      \Log::info('【開発環境デバッグ】再設定URL: ' . $form['url']);
+                  } else {
+                      // 【本番環境（PRODUCTION）】
+                      // 実際にメールを送信する
+                      $email->send();
+                  }
                     // メールしたことをユーザーに通知
                     Session::set_flash('sucMsg', $post_email .'に再設定用のURLを送信しました');
                 }
@@ -226,10 +231,8 @@ class Controller_Members_Editpass extends Controller_Template{
                 {
                     // エラーを管理者が確認できるログに記録
                     logger(\Fuel::L_ERROR, '*** Error sending email ('.__FILE__.'#'.__LINE__.'): '.$e->getMessage());
-
                     Session::set_flash('errMsg','メール送信に失敗しました');
                 }
-
           }
           else
           {
@@ -242,39 +245,30 @@ class Controller_Members_Editpass extends Controller_Template{
         elseif ($hash !== null)
         // フォームの投稿が無く、 URL で渡されたハッシュを持っていますか？
         {
-
             // ハッシュをデコード
-            $hash = base64_decode($hash);
-
+            $decoded = base64_decode($hash);
             // ハッシュからユーザーIDを取得
-            $userid = substr($hash, 44);
+            $userid = substr($decoded, 44);
 
             // そして、この ID を持つユーザーを見つける
             if ($user = \Model\Users::find_by_pk($userid))
-
             {
-              //強制的にログインさせる(simpleauthの場合profile_fieldsの検索はログインしないとできない)
-              \Auth::instance()->force_login($user->id);
+              $profile_fields = @unserialize($user->profile_fields) ?: array();
+              // 復元用ハッシュ値をセット
+              $db_hash = isset($profile_fields['lostpassword_hash']) ? $profile_fields['lostpassword_hash'] : null;
+              // 復元用の日付をセット
+              $db_created = isset($profile_fields['lostpassword_created']) ? $profile_fields['lostpassword_created'] : 0;
 
-              Session::set_flash('sucMsg', '認証に成功しました。パスワードを変更してください。' );
+              if( $db_hash !== null //ハッシュを持っている
+                  and $db_hash === $decoded //ハッシュ値が一致
+                  and (time() - $db_created) < 86400) //24時間未満の応答を許可
+              {
+                  // ログインさせずに、セッションに「許可証」としてユーザーIDを置いておく
+                  Session::set('password_reset_user_id', $user->id);
+                  Session::set_flash('sucMsg', '認証に成功しました。新しいパスワードを設定してください。');
+                  Response::redirect('members/editpass/userPassEdit');
+              }
 
-                // このユーザーは、このハッシュを持っていて、かつ、まだ失効していないか (24 時間未満の応答を許可)
-                if ( null !== ( \Auth::get_profile_fields('lostpassword_hash') ) and \Auth::get_profile_fields('lostpassword_hash') == $hash and time() - \Auth::get_profile_fields('lostpassword_created') < 86400)
-                {
-                    // ハッシュを無効に
-                    \Auth::update_user(
-                        array(
-                            'lostpassword_hash' => null,
-                            'lostpassword_created' => null
-                        ),
-                        $user->username
-                    );
-
-                    // パスワードを変更させるためにプロフィールに行く
-                      \Log::info('パスワード変更ページに飛びました ');
-                      \Response::redirect('members/editpass/userPassEdit');
-
-                }
             }
 
             // ハッシュがおかしい場合
@@ -297,6 +291,9 @@ class Controller_Members_Editpass extends Controller_Template{
     ////////////////////////////////////
       $error = '';
       $formData = '';
+      // パスワード再設定モード用のフラグ
+      $reset_user_id = Session::get('password_reset_user_id');
+
       //ユーザー情報編集用のフォーム作成
       $usereditform = Fieldset::forge('passedit',
       array(
@@ -328,6 +325,12 @@ class Controller_Members_Editpass extends Controller_Template{
         array('type' => 'submit', 'class' => 'btn btn-outline-dark col-5 d-block mx-auto mt-4', 'value '=> '変更する' )
       );
 
+      // 再設定モードなら、旧パスワードの入力を免除
+      if ($reset_user_id) {
+          // フィールドセットから旧パスワードの入力を削除
+          $usereditform->delete('old_password');
+      }
+
       //submitされた時、
       //ポスト送信か確認(⇨validationクラスでバリデーションを実行するためにはPOST送信でなければならないため。)
       if(Input::method() === 'POST'){
@@ -337,36 +340,67 @@ class Controller_Members_Editpass extends Controller_Template{
         if( $val->run() ){
           //バリデーションに成功した場合の処理
           // バリデートに成功したフィールドと値の組を配列で取得する
-            $formData = $val->validated(); //ok
+            $formData = $val->validated();
 
-          $update = Auth::change_password($formData['old_password'],$formData['password']);
+            // 【パスワード再設定モードの場合】旧パスが不明なので、旧パスを確認せずにパスワードを上書きする
+            if ($reset_user_id) {
+              // ユーザーを取得
+              $user = \Model\Users::find_by_pk($reset_user_id);
+
+              if($user)
+              {
+                // Authの制約を回避するため、DBを直接書き換え
+                // 新パスワードをハッシュ化
+                $hashed_password = \Auth::instance()->hash_password($formData['password']);
+                // 新パスワードに書き換え
+                $user->password = $hashed_password;
+                // 復元用に生成したハッシュと作成日時をクリア
+                $profile_fields = @unserialize($user->profile_fields) ?: array();
+                unset($profile_fields['lostpassword_hash']); //復元用のパスワード
+                unset($profile_fields['lostpassword_created']); //復元用の日時
+                $user->profile_fields = serialize($profile_fields);
+
+                // DB更新
+                $update = $user->save();
+
+                if ($update)
+                {
+                  // 保存に成功したら強制ログインさせる
+                  Auth::force_login($reset_user_id);
+                  // 許可証を破棄
+                  Session::delete('password_reset_user_id');
+                }
+              }
+
+            }
+            else
+            {  // 通常モード
+              $update = Auth::change_password($formData['old_password'],$formData['password']);
+            }
 
           //データベースを更新
           if( $update ){
-
           // 更新できたら、セッションに値をいれ、メッセージを出す
-            Session::set_flash('sucMsg','変更しました！');
+            Session::set_flash('sucMsg','パスワードを変更しました！');
           // リダイレクト
-            // Response::redirect('book/bookLists'); //ok
+            Response::redirect('members/mypage/index');
           }
           else
           {
             $error = $val->error();
-            // Response::redirect('home/index');
-            // セッションに値をいれ、メッセージを出す
+            // セッションに値を入れ、メッセージを出す
             Session::set_flash('errMsg','登録できませんでした！');
           }
 
         }
-        else {
+        else
+        {
           //失敗
           // エラー格納
           $error = $val->error();
           //セッションに値をいれ、メッセージを出す
           Session::set_flash('errMsg','登録できませんでした！');
         }
-        // フォームにPOSTされた値をセット
-        // $usereditform->repopulate();
 
       }
         $this->template->usereditform = View::set_global('usereditform',$usereditform->build(), false);
