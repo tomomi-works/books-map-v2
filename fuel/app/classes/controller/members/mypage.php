@@ -1244,7 +1244,10 @@ class Controller_Members_Mypage extends Controller_Template{
     $withdraw_form = \Fieldset::forge('withdraw');
 
     $withdraw_form
-    ->add('withdraw', '', array( 'type' => 'submit', 'class' => 'btn btn-outline-dark col-sm-1 col-5 mx-auto mt-4', 'value' => '退会する' ))
+    ->add('withdraw', '',
+          array( 'type' => 'submit',
+          'class' => 'btn btn-outline-dark col-sm-1 col-5 mx-auto mt-4', 'value' => '退会する',
+          'onclick' => "return confirm('退会すると、これまでの投稿データもすべて削除されます。本当に退会しますか？');" ))
     ->set_template('<div class=\"{error_class}\">{label}{required}</div><div class="field-fieldname text-center">{field} {description} {error_msg}</div>');
 
 
@@ -1254,16 +1257,32 @@ class Controller_Members_Mypage extends Controller_Template{
 
   }
 
-  //userデータを論理削除
+  //userデータを物理削除（論理削除はエラーを生み出しやすいため、小規模サービスということも考慮し、エラー回避を優先）
   public function action_logicaldelete($withdraw_form = '')
   {
-    //username取得
+    // ログイン中のユーザー情報を取得
+    $user_auth = Auth::get_user_id();
+    $user_id = $user_auth[1]; // IDを取得
     $username = Auth::get_screen_name();
-    //userを削除
-    Auth::delete_user( $username );
 
-    //退会完了画面へ
-    $this->template->content = View::forge('pages/withdraw');
+    //該当のユーザーが投稿した本を物理削除
+    \DB::delete('books')->where('user_id', '=', $user_id)->execute();
+    // お気に入りに追加した本を物理削除
+    \DB::delete('favorite')->where('user_id', '=', $user_id)->execute();
+    // 気になるに追加した本を物理削除
+    \DB::delete('interest')->where('user_id', '=', $user_id)->execute();
+
+    // ユーザー自体を物理削除
+    if (Auth::delete_user($username)) {
+        // 成功したらログアウト（セッション破棄）
+        Auth::logout();
+        Session::set_flash('sucMsg', '退会処理が完了しました。ご利用ありがとうございました。');
+        Response::redirect('home/index');
+
+    } else {
+        Session::set_flash('errMsg', '退会処理に失敗しました。');
+        Response::redirect('members/mypage/index');
+    }
 
   }
 

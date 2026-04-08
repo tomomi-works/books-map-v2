@@ -402,7 +402,7 @@ class Controller_Members_Books extends Controller_Template{
   }
 
 
-  //bookデータを論理削除
+  //bookデータを論理削除（間違えて消してしまった場合に復旧できるよう、論理削除を採用）
   public function action_bookdelete()
   {
     //削除対象となるbookのIDをgetパラメーターから取得
