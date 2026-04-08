@@ -221,9 +221,12 @@ class Controller_Home extends Controller_Template
           \Package::load('email');
             // インスタンスを生成する
             $email = Email::forge();
-            // 送信者のアドレスを指定する
-            $email->from(Input::post('email'), Input::post('name'));
-            // 受信者のアドレスを指定する(自分と相手にも届くようにする　)
+
+            // 送信者のアドレスを指定（自分のサイト専用アドレス）
+            $email->from('info@tomomi-s.xyz', 'BooksMAPお問い合わせフォーム');
+            // 返信先のアドレスを指定（顧客のメールアドレス）
+            $email->reply_to(Input::post('email'), Input::post('name'));
+            // 受信者のアドレスを指定（自分と顧客）
             $email->to(array(
                 'booksmap@tomomi-s.xyz' => 'booksmap管理者',
                 Input::post('email') => Input::post('name'),
@@ -237,15 +240,25 @@ class Controller_Home extends Controller_Template
             $form['email'] = Input::post('email');
             $form['name'] = Input::post('name');
             $form['content'] = Input::post('content');
-
-            $email->body(\View::forge('pages/mail'), View::set_global('form',$form) );
-
+            // メール本文用のViewに指定した本文を渡す
+            $email->body(\View::forge('pages/mail', array('form' => $form)));
 
             //メール送信
             try
             {
-                $email->send();
-                Session::set_flash('sucMsg','送信できました');
+              // 環境で場合分け
+              if (Fuel::$env === Fuel::DEVELOPMENT) {
+                  // 【開発環境（MAMPなど）】
+                  // 実際にメールは飛ばさず、ログにURLを出して確認
+                  \Log::info('メールが送信されました');
+                  \Log::info('送信内容: ' . print_r($form, true));
+              } else {
+                  // 【本番環境（PRODUCTION）】
+                  // 実際にメールを送信する
+                  $email->send();
+              }
+
+                Session::set_flash('sucMsg','メールが送信されました');
                 \Response::redirect_back('book/bookLists');
 
             }
