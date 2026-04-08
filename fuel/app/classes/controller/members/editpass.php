@@ -147,7 +147,7 @@ class Controller_Members_Editpass extends Controller_Template{
      //email
      $resist_form->add(
          'email', 'E-mail',
-         array('type' => 'email', 'class' => 'form-control js-contact-email'),
+         array('type' => 'email', 'class' => 'form-control js-contact-email', 'value' => Input::post('email') ? Input::post('email') : ''),
          array('required', 'valid_email')
      );
 
@@ -161,12 +161,12 @@ class Controller_Members_Editpass extends Controller_Template{
 
      if(Input::method() === 'POST'){
 
-       $email = Input::post('email');
+       $post_email = Input::post('email');
 
        // 投稿されたメールアドレスを持っている？
        // \Model\Users
        $user = \DB::select_array(\Config::get('simpleauth.table_columns', array('*')))
-         ->where('email', '=', $email)
+         ->where('email', '=', $post_email)
          ->from(\Config::get('simpleauth.table_name'))
          ->as_object()->execute(\Config::get('simpleauth.db_connection'))->current();
 
@@ -212,15 +212,14 @@ class Controller_Members_Editpass extends Controller_Template{
                     // メールを送信（本番環境用）
                     // $email->send();
 
-                    // 今メールしたことをユーザーに通知
-                    Session::set_flash('sucMsg','認証用URLを送信しました。メールをご確認ください。');
+                    // メールしたことをユーザーに通知
+                    Session::set_flash('sucMsg', $post_email .'に再設定用のURLを送信しました');
                 }
 
                 // バリデーションエラー
                 catch(\EmailValidationFailedException $e)
                 {
-                    Session::set_flash('errMsg','エラーが発生しました。管理者にお問い合わせください');
-                    // \Response::redirect_back();
+                    Session::set_flash('errMsg','メール送信に失敗しました');
                 }
                 // その他、メールサーバーの認証失敗など
                 catch(\Exception $e)
@@ -228,10 +227,15 @@ class Controller_Members_Editpass extends Controller_Template{
                     // エラーを管理者が確認できるログに記録
                     logger(\Fuel::L_ERROR, '*** Error sending email ('.__FILE__.'#'.__LINE__.'): '.$e->getMessage());
 
-                    Session::set_flash('errMsg','エラーが発生しました。もう一度初めからお試しください。');
-                    // \Response::redirect_back();
+                    Session::set_flash('errMsg','メール送信に失敗しました');
                 }
 
+          }
+          else
+          {
+            // セキュリティ面を考慮し、メール送信の旨を表示
+            // ユーザーがメールアドレスの間違いに気がつけるよう、送信したメールアドレスを表示
+            Session::set_flash('sucMsg',$post_email . 'に再設定用のURLを送信しました。');
           }
 
         }
@@ -252,7 +256,7 @@ class Controller_Members_Editpass extends Controller_Template{
               //強制的にログインさせる(simpleauthの場合profile_fieldsの検索はログインしないとできない)
               \Auth::instance()->force_login($user->id);
 
-              Session::set_flash('sucMsg', \Auth::get_profile_fields('lostpassword_hash') );
+              Session::set_flash('sucMsg', '認証に成功しました。パスワードを変更してください。' );
 
                 // このユーザーは、このハッシュを持っていて、かつ、まだ失効していないか (24 時間未満の応答を許可)
                 if ( null !== ( \Auth::get_profile_fields('lostpassword_hash') ) and \Auth::get_profile_fields('lostpassword_hash') == $hash and time() - \Auth::get_profile_fields('lostpassword_created') < 86400)
@@ -267,13 +271,13 @@ class Controller_Members_Editpass extends Controller_Template{
                     );
 
                     // パスワードを変更させるためにプロフィールに行く
-                      \Log::info('パス変更ページに飛びました ');
+                      \Log::info('パスワード変更ページに飛びました ');
                       \Response::redirect('members/editpass/userPassEdit');
 
                 }
             }
 
-            // ハッシュがおかしい
+            // ハッシュがおかしい場合
             Session::set_flash('errMsg', 'リンクが違います。もう一度メールを送信する所からお試しください。');
         }
 

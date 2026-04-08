@@ -12,8 +12,8 @@
   <section id="mypage-panels" class="d-flex justify-content-center my-5 mx-0 row">
     <div class="btn-group btn-group-lg col-sm-6 row" role="group" aria-label="Basic example">
       <p>
-        パスワード変更用の認証パスワードをご登録済みのメールアドレスへお送りします。</br>
-        メールアドレスをご入力ください。
+        パスワード変更用の認証URLをご登録済みのメールアドレスへお送りします。</br>
+        ご登録済みのメールアドレスをご入力ください。
       </p>
       <!-- error message -->
       <?php
