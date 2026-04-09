@@ -11,6 +11,11 @@ class Controller_Regist extends Controller_Rest{
 
     public function post_fav(){
 
+      // ログインしていない場合の処理はさせない
+      if (!\Auth::check()) {
+        return;
+      }
+
       //getパラメーターから、
       //books_idを取得
       $books_id = $_POST['bookid'];
@@ -49,6 +54,11 @@ class Controller_Regist extends Controller_Rest{
 
     public function post_favnon(){
 
+      // ログインしていない場合の処理はさせない
+      if (!\Auth::check()) {
+        return;
+      }
+
       //getパラメーターから、books_idを取得
       $books_id = $_POST['bookid'];
       //ユーザがログイン中なら array(driver_id, user_id) 形式の配列を、そうでなければ false を返す。
@@ -80,6 +90,11 @@ class Controller_Regist extends Controller_Rest{
     //**
     ////////////////
     public function post_interest(){
+
+      // ログインしていない場合の処理はさせない
+      if (!\Auth::check()) {
+        return;
+      }
 
       //getパラメーターから、
       //books_idを取得
@@ -118,6 +133,11 @@ class Controller_Regist extends Controller_Rest{
     }
 
     public function post_interestnon(){
+
+      // ログインしていない場合の処理はさせない
+      if (!\Auth::check()) {
+        return;
+      }
 
       //getパラメーターから、books_idを取得
       $books_id = $_POST['bookid'];
