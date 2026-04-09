@@ -37,7 +37,7 @@
               <li class="nav-item">
                 <?php echo Html::anchor('members/mypage/index','<i class="fas fa-user h3 my-0 mr-3 text-white"></i><p class="my-0 text-white">mypage</p>',array('class'=>'nav-link btn font-ss container-fluid d-block d-flex align-items-center') ); ?>
               </li>
-              <?php if( !empty( $loginuser ) ){
+              <?php if( $loginuser ){
                 ?>
                 <li class="nav-item">
                   <?php echo Html::anchor('/auth/logout','<i class="fas fa-door-closed h3 my-0 mr-3 text-white"></i><p class="my-0 text-white">logout</p>',array('class'=>'nav-link btn font-ss container-fluid d-block d-flex align-items-center') ); ?>
@@ -74,7 +74,7 @@
               <?php echo Html::anchor('members/mypage/index','<i class="fas fa-user h3 my-0"></i>',array('class'=>'nav-link btn font-ss') ); ?>
               <p class="font-ss my-0">mypage</p>
             </li>
-            <?php if( !empty( $loginuser ) ){
+            <?php if( $loginuser ){
               ?>
               <li class="nav-item d-flex flex-column justify-content-end text-center">
                 <?php echo Html::anchor('/auth/logout','<i class="fas fa-door-closed h3 my-0"></i>',array('class'=>'nav-link btn font-ss') ); ?>

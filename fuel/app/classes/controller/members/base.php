@@ -2,7 +2,7 @@
 //------------------
 // membersページの共通処理
 //------------------
-class Controller_Members_Base extends Controller_Template{
+class Controller_Members_Base extends Controller_App_Base{
 
     public function before()
     {
@@ -33,13 +33,14 @@ class Controller_Members_Base extends Controller_Template{
             $current_action = \Request::active()->action;
 
             // Controller_Members_Mypage　かつ、　userPassEdit以外なら追い出す。
-            if ($current_controller !== 'Controller_Members_Mypage' || $current_action !== 'userPassEdit') {
+            if ($current_controller !== 'Controller_Members_Mypage' || $current_action !== 'userPassEdit')
+            {
                 \Session::set_flash('errMsg', 'パスワードの変更を完了させてください。');
                 \Response::redirect('members/mypage/userPassEdit');
             }
 
         }else{
-          // パスワード再設定モードの人の処理
+          // 未ログインユーザーへの処理
           $loginuser = false;
           \Session::set_flash('errMsg', 'ログインしていません');
           // 子クラスで $redirect_to が指定されていればそこへ、なければデフォルトへ
@@ -47,12 +48,5 @@ class Controller_Members_Base extends Controller_Template{
           \Response::redirect($dest);
         }
 
-        // 2. 共通のテンプレート設定
-        $this->template->head = \View::forge('template/head');
-        $this->template->footer = \View::forge('template/footer');
-        $this->template->header = \View::forge('template/header');
-
-        // 全Viewで使えるようにグローバル変数としてセット
-        \View::set_global('loginuser', $loginuser);
     }
 }

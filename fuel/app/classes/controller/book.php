@@ -95,6 +95,8 @@ class Controller_Book extends Controller_Template
 
                // ログイン
                Session::set_flash('sucMsg','ログインしました');
+               \Response::redirect('members/mypage/index');
+
              }else{
                //ユーザー情報が見つかりません
                $errors = $login_form->error();
