@@ -16,41 +16,9 @@ const EMAIL_MAX_LEN =255;
 const USER_NAME_LEN = 6;
 const PASS_LEN = 6;
 
-class Controller_Members_Mypage extends Controller_Template{
+class Controller_Members_Mypage extends Controller_Members_Base{
 
-  public function before()
-   {
-     //ログイン認証
-       parent::before(); // この行がないと、テンプレートが動作しません!
-       //auth check
-
-       $groups = \Auth::get_groups();
-       $group = $groups[0][1];
-       //auth check
-       if( \Auth::check() && $group == 1 )
-       {
-         //ログインチェックok
-         $loginuser = true;
-         // 必要があれば画面遷移
-
-       }else{
-         $loginuser = false;
-         Session::set_flash('errMsg','ログインしていません');
-         \Response::redirect_back('book/booklists');
-       }
-
-
-       //テンプレ
-       $this->template->head = View::forge('template/head');
-       $this->template->footer = View::forge('template/footer');
-       $this->template->header = View::forge('template/header');
-       $this->template->loginuser = View::set_global('loginuser' ,$loginuser);
-
-
-   }
-
-
-   //mypage
+  //mypage
   public function action_index()
    {
        //contentは可変

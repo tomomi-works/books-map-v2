@@ -14,35 +14,7 @@ const USER_NAME_LEN = 6;
 const PASS_LEN = 6;
 
 
-class Controller_Members_Books extends Controller_Template{
-
-
-  public function before()
-   {
-     //ログイン認証
-       parent::before(); // この行がないと、テンプレートが動作しません!
-       //auth check
-       $groups = \Auth::get_groups();
-       $group = $groups[0][1];
-       //auth check
-       if( \Auth::check() && $group == 1 )
-       {
-         //ログインチェックok
-         $loginuser = true;
-
-       }else{
-         $loginuser = false;
-         Session::set_flash('errMsg','ログインしていません');
-         Response::redirect_back('/members/mypage/index');
-
-       }
-       //テンプレ
-       $this->template->head = View::forge('template/head');
-       $this->template->footer = View::forge('template/footer');
-       $this->template->header = View::forge('template/header');
-       $this->template->loginuser = View::set_global('loginuser' ,$loginuser);
-
-   }
+class Controller_Members_Books extends Controller_Members_Base{
 
   //bookEdit
   public function action_bookEdit()
