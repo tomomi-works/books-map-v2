@@ -3,6 +3,7 @@
 //index
 //contact
 //bookDetail
+//404
 //------------------
 
 use \Model\Post;
@@ -258,7 +259,14 @@ class Controller_Home extends Controller_Public_Base{
 
     }
 
-
+    // 404 not found
+    public function action_404()
+    {
+        // 404ステータスを正しく返す設定
+        $this->response_status = 404;
+        $this->template->site_title = 'ページが見つかりません';
+        $this->template->content = View::forge('pages/404');
+    }
 
 
 

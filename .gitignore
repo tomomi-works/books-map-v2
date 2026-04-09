@@ -42,14 +42,3 @@ fuel/app/config/*/*.php
 
 !fuel/app/config/*.example
 !fuel/app/config/*/*.example
-
-# test files [views]
-fuel/app/views/common/head.php
-fuel/app/views/common/header.php
-fuel/app/views/common/footer.php
-fuel/app/views/pages/bookSubmitCheck.php
-fuel/app/views/pages/pagination.php
-fuel/app/views/pages/no-searchHead.php
-fuel/app/views/pages/signUp.php
-fuel/app/views/pages/login.php
-fuel/app/views/template0.php
