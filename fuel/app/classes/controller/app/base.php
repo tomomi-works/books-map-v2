@@ -87,8 +87,9 @@ class Controller_App_Base extends Controller_Template{
 
                     // ログイン
                     //ユーザーが居た以前のページか、以前のページが検出できない場合はmembers/mypage/indexへ
-                    \Response::redirect('members/mypage/index');
+
                     \Session::set_flash('sucMsg','ログインしました');
+                    \Response::redirect('members/mypage/index');
                 }
 
             }else{
