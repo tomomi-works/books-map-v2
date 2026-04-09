@@ -2,6 +2,13 @@
 //------------------
 // 全ページの共通処理
 //------------------
+
+//定数
+const USER_NAME_LEN = 6;//usernameの長さ
+const PASS_LEN = 6; //パスワードの長さ
+const EMAIL_MIN_LEN = 1; //emailの最短
+const EMAIL_MAX_LEN = 255; //emailの最長
+
 class Controller_App_Base extends Controller_Template{
 
     public function before()

@@ -12,10 +12,6 @@
 //logicaldelete
 //------------------
 
-const EMAIL_MIN_LEN = 1;
-const EMAIL_MAX_LEN =255;
-const USER_NAME_LEN = 6;
-const PASS_LEN = 6;
 
 class Controller_Members_Mypage extends Controller_Members_Base{
 

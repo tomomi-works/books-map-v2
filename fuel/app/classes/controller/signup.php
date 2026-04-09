@@ -4,11 +4,7 @@
 //------------------
 
 
-//定数
-const USER_NAME_LEN = 6;//usernameの長さ
-const PASS_LEN = 6; //パスワードの長さ
-const EMAIL_MIN_LEN = 1; //emailの最短
-const EMAIL_MAX_LEN = 255; //emailの最長
+//定数はController_Public_Baseにて定義
 
 class Controller_Signup extends Controller_Public_Base{
 

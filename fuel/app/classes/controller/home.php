@@ -8,8 +8,6 @@
 use \Model\Post;
 
 //定数
-const USER_NAME_LEN = 6;//usernameの長さ
-const PASS_LEN = 6; //パスワードの長さ
 const CONTACT_NAME_LEN = 29;
 const CONTACT_TEXT_LEN = 1000;
 
