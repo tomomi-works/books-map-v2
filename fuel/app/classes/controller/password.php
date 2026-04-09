@@ -69,6 +69,7 @@ class Controller_Password extends Controller_Template{
 
          //ログインフォームが投稿されたら？
          if(Input::method() === 'POST' && Input::post('login') ){
+
            // 現在の Fieldset の Validation インスタンスを取得
            $val = $login_form->validation();
            //バリデーションチェック
@@ -97,16 +98,12 @@ class Controller_Password extends Controller_Template{
                // Session::set_flash('sucMsg','ログインしました');
              }
 
-
            }else{
-
              // 失敗
-
              //エラーを配列形式で格納
              $errors = $login_form->error();
              //erorr message
              Session::set_flash('errMsg','ログインに失敗しました');
-
            }
 
            // フォーム送信からの入力値をフィールドに設定する。
