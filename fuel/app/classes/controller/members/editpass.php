@@ -414,7 +414,7 @@
   //     $this->template->pass = View::set_global('pass',$pass);
   // }
 
-}
+// }
 
 
  ?>

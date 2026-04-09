@@ -165,7 +165,7 @@
             <!-- link -->
               <div class="d-flex flex-column">
                 <?php echo Html::anchor('signup/index', '新規登録', array('class' => 'btn btn-sm btn-link' ) ); ?>
-                <?php echo Html::anchor('members/editpass/registPass', 'パスワードを忘れた方', array('class' => 'btn btn-sm btn-link' ) ); ?>
+                <?php echo Html::anchor('password/registPass', 'パスワードを忘れた方', array('class' => 'btn btn-sm btn-link' ) ); ?>
               </div>
           </div>
 
