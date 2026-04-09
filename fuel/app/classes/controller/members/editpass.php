@@ -266,7 +266,7 @@ class Controller_Members_Editpass extends Controller_Template{
                   // ログインさせずに、セッションに「許可証」としてユーザーIDを置いておく
                   Session::set('password_reset_user_id', $user->id);
                   Session::set_flash('sucMsg', '認証に成功しました。新しいパスワードを設定してください。');
-                  Response::redirect('members/editpass/userPassEdit');
+                  Response::redirect('members/mypage/userPassEdit');
               }
 
             }

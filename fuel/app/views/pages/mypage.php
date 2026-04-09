@@ -18,7 +18,7 @@
   <section id="mypage-panels-small" class="d-flex justify-content-center my-5 mx-0 row">
     <div class="btn-group-sm col-sm-9 my-5 d-flex justify-content-end" role="group" aria-label="Basic example">
       <?php echo Html::anchor('members/mypage/userInfoEdit', 'メール情報の編集', array('class' => 'btn btn-link rounded-sm') ); ?>
-      <?php echo Html::anchor('members/editpass/userPassEdit', 'パスワードの編集', array('class' => 'btn btn-link rounded-sm') ); ?>
+      <?php echo Html::anchor('members/mypage/userPassEdit', 'パスワードの編集', array('class' => 'btn btn-link rounded-sm') ); ?>
       <?php //echo Html::anchor('members/mypage/userNameEdit', 'ユーザー名の編集', array('class' => 'btn btn-link rounded-sm') ); ?>
       <?php echo Html::anchor('members/mypage/withdraw', '退会', array('class' => 'btn btn-link rounded-sm') ); ?>
     </div>
