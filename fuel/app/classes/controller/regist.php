@@ -1,4 +1,11 @@
 <?php
+//------------action
+// post_fav
+// post_favnon
+// post_interest
+// post_interestnon
+//------------------
+
 
 class Controller_Regist extends Controller_Rest{
 
