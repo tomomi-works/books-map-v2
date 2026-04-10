@@ -13,9 +13,9 @@
 
 ## ⚙️ セットアップ方法
 - MySQLで任意のデータベースを作成してください。  
-- 作成したデータベースに対し、sql/fuel_dev.sql をインポートしてください。
-- fuel/app/config/development/db.php の接続先情報を、作成したデータベース名に合わせて書き換えてください。
-- public/assets/img/uploads/ フォルダの書き込み権限（パーミッション）が適切に設定されていることを確認してください。
+- 作成したデータベースに対し、`sql/fuel_dev.sql`をインポートしてください。
+- `fuel/app/config/development/db.php`の接続先情報を、作成したデータベース名に合わせて設定してください。
+- `public/assets/img/uploads/`フォルダの書き込み権限（パーミッション）が適切に設定されていることを確認してください。
 
 ## ⏰ 開発・運用履歴
 - 2020.3  
@@ -42,12 +42,12 @@
 
 ## 💻 使用技術
 - **Framework**: FuelPHP 1.8.2
-- **Language**: PHP 7.4 / JavaScript / HTML5 / CSS3 / bootstrap/ scss
+- **Language**: PHP 7.4 / JavaScript / HTML5 / CSS3 / bootstrap / scss
 - **DB**: MySQL
 - **Environment**: MAMP
 
 ## 🚀 今後の展望
-- UIを意識した画面遷移の改善
+- UXを意識した画面遷移の改善
 - ユーザー認証機能のブラッシュアップ
 - サーバーへのアップロード
 - 本番環境（Productionモード）への完全な移行に向けた設定の最適化
