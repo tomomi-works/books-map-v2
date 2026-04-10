@@ -393,37 +393,6 @@ class Controller_Members_Books extends Controller_Members_Base{
 
   }
 
-  // ダミーデーター生成（必要な場合のみコメントアウトを外してアクセス可）
-  // public function action_setup_data()
-  // {
-  //     // ログイン中のユーザーIDを取得
-  //     $u_id = Auth::instance()->get_user_id();
-  //     $u_id = $u_id[1];
-  //
-  //     // 20件のループ
-  //     for ($i = 1; $i <= 20; $i++) {
-  //         $books = \Model\Books::forge();
-  //         $books->set(array(
-  //             'title'      => 'テスト本_' . $i . '巻',
-  //             'cate_id'    => 1, // 既存のカテゴリID（数字）を入れてください
-  //             'stat_id'    => 1, // 既存のステータスID（数字）を入れてください
-  //             'price'      => 500 + ($i * 100),
-  //             'img'        => 'dist/no_image.png', // 画像がなければこれ。あれば既存のファイル名
-  //             'short'      => 'これはテスト用のあらすじです。' . $i . '番目のデータ。ページネーションのテストに最適です。',
-  //             'summary'    => 'これはテスト用の本文です。大量のデータがある時の動作を確認するために生成しました。',
-  //             'delete_flg' => 0,
-  //             'user_id'    => $u_id,
-  //             'created_at' => date('Y-m-d H:i:s'),
-  //             'updated_at' => date('Y-m-d H:i:s'),
-  //         ));
-  //         $books->save();
-  //     }
-  //
-  //     return "20件のデータを生成しました！一覧画面を確認してください。";
-  // }
-
-
-
 }
 
  ?>
