@@ -22,7 +22,7 @@
           </div>
         </div>
       </div>
-      <p class="m-0 d-flex align-items-end justify-content-center height__80">Copyright © <a href="https://tomomi-s.xyz/">TOMOMI</a> All Rights Reserved.</p>
+      <p class="m-0 d-flex align-items-end justify-content-center height__80">Copyright © <a href="https://github.com/tomomi-works/">TOMOMI</a> All Rights Reserved.</p>
     </footer>
   </div>
 </div>

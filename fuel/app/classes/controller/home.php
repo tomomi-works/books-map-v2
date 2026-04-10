@@ -112,12 +112,12 @@ class Controller_Home extends Controller_Public_Base{
             $email = Email::forge();
 
             // 送信者のアドレスを指定（自分のサイト専用アドレス）
-            $email->from('info@tomomi-s.xyz', 'BooksMAPお問い合わせフォーム');
+            $email->from('info@example.com', 'BooksMAPお問い合わせフォーム');
             // 返信先のアドレスを指定（顧客のメールアドレス）
             $email->reply_to(Input::post('email'), Input::post('name'));
             // 受信者のアドレスを指定（自分と顧客）
             $email->to(array(
-                'booksmap@tomomi-s.xyz' => 'booksmap管理者',
+                'sample@example.com' => 'booksmap管理者',
                 Input::post('email') => Input::post('name'),
             ));
 

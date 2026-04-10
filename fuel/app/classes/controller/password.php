@@ -88,7 +88,7 @@ class Controller_Password extends Controller_Public_Base{
                  $email->subject('BooksMAPパスワード変更');
 
                  // 差出人と宛先を追加
-                 $email->from('booksmap@tomomi-s.xyz', 'booksmap事務局');
+                 $email->from('sample@example.com', 'booksmap事務局');
                  $email->to($user->email, $user->username);
 
 

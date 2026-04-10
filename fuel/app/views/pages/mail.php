@@ -23,4 +23,4 @@ _____________________________
 
 --------------------
 From：booksmap事務局
-email：booksmap@tomomi-s.xyz
+email：sample@example.com
