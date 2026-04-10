@@ -97,6 +97,10 @@ class Controller_App_Base extends Controller_Template{
 
                     \Session::set_flash('sucMsg','ログインしました');
                     \Response::redirect('members/mypage/index');
+                }else{
+                    // ユーザーが存在しない、またはパスワードが異なる場合
+                    Session::set_flash('errMsg', 'ユーザー名かパスワードが正しくありません。');
+                    $login_form->repopulate();
                 }
 
             }else{
