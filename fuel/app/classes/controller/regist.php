@@ -86,8 +86,8 @@ class Controller_Regist extends Controller_Rest{
 
 
     ////////////////
-    ///**
-    //**
+    ///**post_interest
+    //**post_interestnon
     ////////////////
     public function post_interest(){
 

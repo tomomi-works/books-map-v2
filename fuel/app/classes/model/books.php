@@ -37,16 +37,6 @@ class Books extends \Model_Crud
         return $books;
       }
 
-    // //本の情報をupdate
-    // public static function pre_update(&$query)
-    //   {
-    //     // 更新クエリを変更。
-    //     $query->set($form);
-    //
-    //   }
-
-
-
 }
 
 

@@ -332,10 +332,7 @@ class Controller_Members_Books extends Controller_Members_Base{
               //成功メッセージ
               Session::set_flash('sucMsg','登録できました！');
             }
-
-            //ページ遷移->マイページの投稿一覧画面
-            // Response::redirect('members/mypage/submitBookList');
-
+            
           }
           else
           {

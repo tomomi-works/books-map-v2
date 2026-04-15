@@ -207,7 +207,7 @@ class Controller_Book extends Controller_Public_Base{
     if(!empty($catep)){
       $cateparam = '';
       foreach ($catep as $key => $val) {
-        //cate[0]=0&cate[1]=1&...って形で表示させる
+        //cate[0]=0&cate[1]=1&...という形で表示させる
           $cateparam .= 'cate['.$val.']='.$val.'&';
       }
     }
@@ -218,7 +218,7 @@ class Controller_Book extends Controller_Public_Base{
     if(!empty($statp)){
       $statparam = '';
       foreach ($statp as $key => $val) {
-        //cate[0]=0&cate[1]=1&...って形で表示させる
+        //cate[0]=0&cate[1]=1&...という形で表示させる
           $statparam .= 'stat['.$val.']='.$val.'&';
       }
     }

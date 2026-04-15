@@ -9,5 +9,3 @@
     </div>
   </div>
 </section>
-
-<!-- d-flex justify-content-center flex-column row mx-0 mt-4 -->

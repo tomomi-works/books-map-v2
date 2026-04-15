@@ -52,7 +52,6 @@ class Controller_Password extends Controller_Public_Base{
         $post_email = Input::post('email');
 
         // 投稿されたメールアドレスを持っている？
-        // \Model\Users
         $user = \DB::select_array(\Config::get('simpleauth.table_columns', array('*')))
           ->where('email', '=', $post_email)
           ->from(\Config::get('simpleauth.table_name'))
